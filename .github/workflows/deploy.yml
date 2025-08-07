@@ -8,7 +8,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  CONTAINER_NAME: fastapi-app
+  IMAGE_NAME_LOWER: ${{ github.repository.lower() }}
+  CONTAINER_NAME: fastapi-api
 
 jobs:
   build-and-push:
@@ -35,7 +36,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER}}
           tags: |
             type=ref,event=branch
             type=sha,prefix={{branch}}-
@@ -71,7 +72,7 @@ jobs:
             set -e
 
             export REGISTRY="${{ env.REGISTRY }}"
-            export IMAGE_NAME="${{ env.IMAGE_NAME }}"
+            export IMAGE_NAME_LOWER="${{ env.IMAGE_NAME_LOWER}}"
             export TAG="${{ github.sha }}"
             export CONTAINER_NAME="${{ env.CONTAINER_NAME }}"
             export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
@@ -83,7 +84,7 @@ jobs:
             version: '3.8'
             services:
               fastapi:
-                image: \${REGISTRY}/\${IMAGE_NAME}:\${TAG}
+                image: \${REGISTRY}/\${IMAGE_NAME_LOWER}:\${TAG}
                 container_name: \${CONTAINER_NAME}
                 ports:
                   - "8000:8000"
@@ -104,7 +105,7 @@ jobs:
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login \$REGISTRY -u ${{ github.actor }} --password-stdin
 
-            docker pull \$REGISTRY/\$IMAGE_NAME:\$TAG
+            docker pull \$REGISTRY/\$IMAGE_NAME_LOWER:\$TAG
 
             docker stop \$CONTAINER_NAME || true
             docker rm \$CONTAINER_NAME || true
