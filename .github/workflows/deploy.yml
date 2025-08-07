@@ -37,8 +37,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}
           tags: |
             type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=sha
+            type=sha,prefix=sha-
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -67,7 +66,7 @@ jobs:
 
       - name: Get image tag
         id: get_tag
-        run: echo "tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+        run: echo "tag=sha-${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
