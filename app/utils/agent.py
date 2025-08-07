@@ -5,7 +5,7 @@ from app.models.call import PrankCallAnalysis
 
 agent = Agent(
     "google-gla:gemini-2.0-flash",
-    result_type=PrankCallAnalysis,
+    output_type=PrankCallAnalysis,
     system_prompt="""
     You are an emergency call analysis system that determines if a call is a prank call.
     
