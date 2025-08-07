@@ -1,19 +1,22 @@
 import logging
 import json
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, Depends, WebSocket
 
 from app.api.dependencies import get_call_service
 from app.models.call import StreamingCallChunk
+from app.service.analysis import StreamingCallProcessor
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 
-@router.websocket(path="/ws/analyze-call-stream")
-async def call_analysis_endpoint(websocket: WebSocket):
+@router.websocket(path="/analyze-call-stream")
+async def call_analysis_endpoint(
+    websocket: WebSocket,
+    call_processor: StreamingCallProcessor = Depends(get_call_service),
+):
     """WebSocket endpoint for streaming call analysis"""
-    call_processor = get_call_service()
     await websocket.accept()
 
     try:
