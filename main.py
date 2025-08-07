@@ -5,7 +5,7 @@ import logging
 import uvicorn
 
 
-from app.api.routes import analyze
+from app.api.routes import analyze, health
 from app.core.config import settings
 
 # Configure logging
@@ -32,7 +32,6 @@ app = FastAPI(
     version=settings.VERSION,
     description="BIBOT: Samsung Electronics VD Division Chatbot API",
     docs_url="/docs",
-    openapi_url="/openapi.json",
     redoc_url="/redoc",
     lifespan=app_lifespan,
 )
@@ -47,7 +46,7 @@ app.add_middleware(
 )
 
 # Include routers
-# app.include_router(health.router, prefix="/api/v1", tags=["health"])
+app.include_router(health.router, prefix="/api/v1", tags=["health"])
 app.include_router(analyze.router, prefix="/ws/v1", tags=["analyze"])
 
 
