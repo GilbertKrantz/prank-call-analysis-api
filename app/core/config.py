@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     # LLM Configuration
     LLM_MODEL: str = "google-gla:gemini-2.0-flash"
-    LLM_KEY: Optional[str] = None
+    GEMINI_API_KEY: Optional[str] = None
 
     class Config:
         env_file = ".env"
