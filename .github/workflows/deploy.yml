@@ -66,7 +66,7 @@ jobs:
 
       - name: Get image tag
         id: get_tag
-        run: echo "tag=sha-${{ github.sha }}" >> $GITHUB_OUTPUT
+        run: echo "tag=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
