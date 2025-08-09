@@ -15,7 +15,7 @@ COPY . /app
 WORKDIR /app
 RUN uv sync --frozen --no-cache
 
-EXPOSE 8080
+EXPOSE 8000
 
 # Run the application.
 CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
