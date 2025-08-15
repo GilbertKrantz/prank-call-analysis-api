@@ -2,9 +2,10 @@ import logging
 import json
 from fastapi import APIRouter, Depends, WebSocket
 
-from app.api.dependencies import get_call_service
+from app.api.dependencies import get_call_service, azure_speech_handler
 from app.models.call import StreamingCallChunk
 from app.service.analysis import StreamingCallProcessor
+from app.service.azure_speech import AzureSpeechHandler
 
 logger = logging.getLogger(__name__)
 
@@ -40,3 +41,14 @@ async def call_analysis_endpoint(
     except Exception as e:
         print(f"WebSocket error: {e}")
         await websocket.close()
+
+
+@router.websocket("/call/{call_id}")
+async def ws_call(
+    websocket: WebSocket,
+    call_id: str,
+    call_processor: StreamingCallProcessor = Depends(get_call_service),
+    speech_handler: AzureSpeechHandler = Depends(azure_speech_handler),
+):
+    await websocket.accept()
+    await speech_handler.stream_audio_to_processor(call_id, call_processor, websocket)
