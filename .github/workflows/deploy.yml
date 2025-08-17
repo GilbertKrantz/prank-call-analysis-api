@@ -82,6 +82,8 @@ jobs:
             export TAG="${{ steps.get_tag.outputs.tag }}"
             export CONTAINER_NAME="${{ env.CONTAINER_NAME }}"
             export GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}"
+            export AZURE_SPEECH_KEY="${{ secrets.AZURE_SPEECH_KEY }}"
+            export AZURE_SPEECH_REGION="${{ secrets.AZURE_SPEECH_REGION }}"
             
             echo "Logging into container registry..."
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
@@ -124,6 +126,8 @@ jobs:
                   - "8000:8000"
                 environment:
                   - GEMINI_API_KEY=$GEMINI_API_KEY
+                  - AZURE_SPEECH_KEY=$AZURE_SPEECH_KEY
+                  - AZURE_SPEECH_REGION=$AZURE_SPEECH_REGION
                 restart: unless-stopped
                 healthcheck:
                   test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
